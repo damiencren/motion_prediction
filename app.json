@@ -1,5 +1,8 @@
 {
   "expo": {
+    "assetBundlePatterns": [
+      "assets/*"
+    ],
     "name": "movements_prediction",
     "slug": "movements_prediction",
     "version": "1.0.0",
@@ -37,5 +40,6 @@
     "experiments": {
       "typedRoutes": true
     }
+    
   }
 }
