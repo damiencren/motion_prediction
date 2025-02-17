@@ -1,8 +1,5 @@
 {
   "expo": {
-    "assetBundlePatterns": [
-      "assets/*"
-    ],
     "name": "movements_prediction",
     "slug": "movements_prediction",
     "version": "1.0.0",
@@ -11,14 +8,20 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "extraFiles": {
+        "assets/lstm/group1-shard1of1.bin": "android/app/src/main/assets/lstm/group1-shard1of1.bin"
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.damiencr.movements_prediction",
+      "permissions": ["CAMERA"]
     },
     "web": {
       "bundler": "metro",
@@ -39,7 +42,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
-    
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "4594f5a3-9544-40f2-b606-2d7d456982e7"
+      }
+    },
+    "owner": "damiencr"
   }
 }
