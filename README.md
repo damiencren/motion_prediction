@@ -1,50 +1,55 @@
-# Welcome to your Expo app 👋
+# Motion Detection
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> This project is a mobile application developed with React Native, integrating a deep learning model to detect user movements, such as walking or lying down. It aligns with my academic program.
 
-## Get started
+### 📌 Features
 
-1. Install dependencies
+- Real-time motion detection using smartphone sensors (accelerometer and gyroscope).
 
-   ```bash
-   npm install
-   ```
+- Deep learning model based on LSTM for accurate sequence analysis.
 
-2. Start the app
+- Simple and intuitive interface displaying real-time predictions.
 
-   ```bash
-    npx expo start
-   ```
+- Deployment via Expo (EAS) for simplified installation.
 
-In the output, you'll find options to open the app in a
+### 🛠 Technologies Used
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- React Native for mobile app development.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- TensorFlow.js for deep learning model integration on mobile.
 
-## Get a fresh project
+- Google Colab for model training.
 
-When you're ready, run:
+- scikit-learn for data preprocessing.
 
+### 🚀 Installation & Execution
+
+1. Clone the repository
 ```bash
-npm run reset-project
+git clone https://github.com/damiencren/motion_prediction
+cd motion_prediction
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+3. Start the application in development mode
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npx expo start
+```
 
-## Join the community
+### 📌 Future Improvements
 
-Join our community of developers creating universal apps.
+- Optimizing model performance on mobile.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Exploring hybrid architectures combining CNN + LSTM.
+
+- Improved calibration for better prediction accuracy.
+
+### 📜 License
+
+- This project is licensed under the MIT License.
