@@ -1,5 +1,5 @@
 // butterworthFilter.ts
-export class ButterworthFilter {
+export default class ButterworthFilter {
     private a0: number;
     private a1: number;
     private a2: number;

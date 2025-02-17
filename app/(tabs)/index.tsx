@@ -1,14 +1,22 @@
+import "@tensorflow/tfjs-react-native";
+import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Accelerometer, Gyroscope, AccelerometerMeasurement } from 'expo-sensors';
-import { ButterworthFilter } from '../filters/butterworthFilter'; // Assurez-vous que le chemin est correct
+import ButterworthFilter from '../filters/butterworthFilter';
 import * as tf from '@tensorflow/tfjs';
-import { bundleResourceIO } from '@tensorflow/tfjs-react-native';
 
-const modelJSON = require('../../assets/model.json');
-const modelWeights = require('../../assets/group1-shard1of1.bin');
 
 const SensorExample = () => {
+
+  // Load the lstm model
+  const modelJson = require("../../assets/model/lstm/model.json");
+  const modelWeights = [require("../../assets/model/lstm/group1-shard1of2.bin"),require("../../assets/model/lstm/group1-shard2of2.bin"),];
+
+  // Load the cnn model
+  // const modelJson = require("../../assets/model/cnn/model.json");
+  // const modelWeights = require("../../assets/model/cnn/group1-shard1of1.bin");
+
   const BUFFER_SIZE = 128; // time_steps
 
   // buffer for sensor data
@@ -19,15 +27,17 @@ const SensorExample = () => {
   const [gyroscopeData, setGyroscopeData] = useState({ x: 0, y: 0, z: 0 });
   const [bodyAccelerometerData, setBodyAccelerometerData] = useState({ x: 0, y: 0, z: 0 });
   const [predictedGesture, setPredictedGesture] = useState<number | null>(null);
+  const [isModelLoaded, setIsModelLoaded] = useState(false);
 
   // mean and std from the training
   const mean = [0.804749279, 0.0287554865, 0.0864980163, -0.000636303058, -0.000292296856, -0.000275299412, 0.000506464674, -0.000823780831, 0.000112948439];
   const std = [0.41411195, 0.39099543, 0.35776881, 0.19484634, 0.12242748, 0.10687881, 0.40681506, 0.38185432, 0.25574314];
+
   const gestures = ['WALKING', 'WALKING_UPSTAIRS', 'WALKING_DOWNSTAIRS', 'SITTING', 'STANDING', 'LAYING'];
 
   // resfesh rate for sensors
-  Accelerometer.setUpdateInterval(20); 
-  Gyroscope.setUpdateInterval(20); 
+  Accelerometer.setUpdateInterval(20);
+  Gyroscope.setUpdateInterval(20);
 
   const modelRef = useRef<tf.GraphModel | null>(null);
 
@@ -41,14 +51,18 @@ const SensorExample = () => {
   useEffect(() => {
     const loadModel = async () => {
       await tf.ready();
-      console.log('TensorFlow chargé avec succès');
+      console.log('TensorFlow prêt');
+
       try {
-        modelRef.current = await tf.loadGraphModel(bundleResourceIO(modelJSON, modelWeights));
+        const model = await tf.loadGraphModel(bundleResourceIO(modelJson, modelWeights));
+        modelRef.current = model;
+        setIsModelLoaded(true);
         console.log('Modèle chargé avec succès');
       } catch (error) {
-        console.error('Erreur lors du chargement du modèle:', error);
+        console.error("Error loading model:", error);
       }
     };
+
     loadModel();
   }, []);
 
@@ -95,7 +109,9 @@ const SensorExample = () => {
   // Prédiction périodique
   useEffect(() => {
     const predictInterval = setInterval(async () => {
-      if (dataBuffer.current.length >= BUFFER_SIZE && modelRef.current) {
+
+      if (isModelLoaded && dataBuffer.current.length >= BUFFER_SIZE && modelRef.current) {
+        bufferLock.current = true;
         try {
           const window = dataBuffer.current.slice(-BUFFER_SIZE);
           await predict(window);
@@ -104,11 +120,12 @@ const SensorExample = () => {
         } catch (error) {
           console.error('Prediction error:', error);
         }
+        bufferLock.current = false;
       }
-    }, 1280); // 1.28 secondes
+    }, 1000); // 1sec
 
     return () => clearInterval(predictInterval);
-  }, []);
+  }, [isModelLoaded]);
 
   const predict = async (window: number[][]) => {
     try {
@@ -129,8 +146,9 @@ const SensorExample = () => {
         console.log('Predicted gesture:', gestures[predictedIndex]);
         tf.dispose(prediction);
       }
-    } catch (error) {
-      console.error('Erreur lors de la prédiction:', error);
+    } catch (error: any) {
+      console.error('Erreur lors de la prédiction:', error.message);
+      console.error('Détails:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
     }
   };
 
@@ -151,11 +169,18 @@ const SensorExample = () => {
       <Text style={styles.data}>X: {gyroscopeData.x}</Text>
       <Text style={styles.data}>Y: {gyroscopeData.y}</Text>
       <Text style={styles.data}>Z: {gyroscopeData.z}</Text>
-      
-      <Text style={styles.label}>Predicted Gesture</Text>
-      {predictedGesture !== null && (
-        <Text style={styles.data}>Predicted Gesture: {gestures[predictedGesture]}</Text>
+
+      {predictedGesture !== null ?(
+        <View>
+          <Text style={styles.label}>Predicted Gesture : {gestures[predictedGesture]}</Text>
+        </View>
+      ): (
+        <View>
+          
+          <Text style={styles.label}>Loading Model...</Text>
+        </View>
       )}
+
     </View>
   );
 };
@@ -178,6 +203,10 @@ const styles = StyleSheet.create({
   },
   data: {
     fontSize: 16,
+  },
+  tinyLogo: {
+    width: 50,
+    height: 50,
   },
 });
 

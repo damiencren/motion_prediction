@@ -23,7 +23,10 @@ export default function TabLayout() {
             // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
           },
-          default: {},
+          default: {
+            // Retirer la barre de navigation sur Android
+            display: 'none',
+          },
         }),
       }}>
       <Tabs.Screen
