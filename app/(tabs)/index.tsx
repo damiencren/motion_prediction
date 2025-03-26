@@ -7,15 +7,17 @@ import ButterworthFilter from '../filters/butterworthFilter';
 import * as tf from '@tensorflow/tfjs';
 
 
-const SensorExample = () => {
+const SensorTab = () => {
 
   // Load the lstm model
-  const modelJson = require("../../assets/model/lstm/model.json");
-  const modelWeights = [require("../../assets/model/lstm/group1-shard1of2.bin"),require("../../assets/model/lstm/group1-shard2of2.bin"),];
+  // const modelJson = require("../../assets/model/lstm/model.json");
+  // const modelWeights = [require("../../assets/model/lstm/group1-shard1of2.bin"),require("../../assets/model/lstm/group1-shard2of2.bin"),];
 
   // Load the cnn model
-  // const modelJson = require("../../assets/model/cnn/model.json");
-  // const modelWeights = require("../../assets/model/cnn/group1-shard1of1.bin");
+  const modelJson = require("../../assets/model/cnn/model.json");
+  const modelWeights = require("../../assets/model/cnn/group1-shard1of1.bin");
+
+  const predictionInterval = 2600; // ms
 
   const BUFFER_SIZE = 128; // time_steps
 
@@ -27,7 +29,7 @@ const SensorExample = () => {
   const [gyroscopeData, setGyroscopeData] = useState({ x: 0, y: 0, z: 0 });
   const [bodyAccelerometerData, setBodyAccelerometerData] = useState({ x: 0, y: 0, z: 0 });
   const [predictedGesture, setPredictedGesture] = useState<number | null>(null);
-  const [isModelLoaded, setIsModelLoaded] = useState(false);
+  const isPredicting = useRef(false);
 
   // mean and std from the training
   const mean = [0.804749279, 0.0287554865, 0.0864980163, -0.000636303058, -0.000292296856, -0.000275299412, 0.000506464674, -0.000823780831, 0.000112948439];
@@ -56,7 +58,6 @@ const SensorExample = () => {
       try {
         const model = await tf.loadGraphModel(bundleResourceIO(modelJson, modelWeights));
         modelRef.current = model;
-        setIsModelLoaded(true);
         console.log('Modèle chargé avec succès');
       } catch (error) {
         console.error("Error loading model:", error);
@@ -108,10 +109,15 @@ const SensorExample = () => {
 
   // Prédiction périodique
   useEffect(() => {
+    if (modelRef.current === null) {
+      console.log('Model not loaded');
+      return;
+    }
     const predictInterval = setInterval(async () => {
 
-      if (isModelLoaded && dataBuffer.current.length >= BUFFER_SIZE && modelRef.current) {
+      if (dataBuffer.current.length >= BUFFER_SIZE && modelRef.current && !isPredicting.current) {
         bufferLock.current = true;
+        isPredicting.current = true;
         try {
           const window = dataBuffer.current.slice(-BUFFER_SIZE);
           await predict(window);
@@ -121,11 +127,12 @@ const SensorExample = () => {
           console.error('Prediction error:', error);
         }
         bufferLock.current = false;
+        isPredicting.current = false;
       }
-    }, 1000); // 1sec
+    }, predictionInterval);
 
     return () => clearInterval(predictInterval);
-  }, [isModelLoaded]);
+  }, [modelRef.current]);
 
   const predict = async (window: number[][]) => {
     try {
@@ -210,4 +217,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SensorExample;
+export default SensorTab;

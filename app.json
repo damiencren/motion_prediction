@@ -13,9 +13,6 @@
       "supportsTablet": true
     },
     "android": {
-      "extraFiles": {
-        "assets/lstm/group1-shard1of1.bin": "android/app/src/main/assets/lstm/group1-shard1of1.bin"
-      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
