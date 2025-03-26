@@ -48,6 +48,8 @@ yarn install
 
 3. Start the application in development mode
 
+> **💡 Note :** Dont forget to press s to switch from *development build* to *Expo GO*.
+
 ```bash
 npx expo start
 ```
@@ -65,6 +67,8 @@ To use your own models, place them in the assets/models/* folder and ensure they
 To work with the application in development mode, use the following command
 
 > **💡 Note :** We use npx to avoid installing the Expo and EAS CLI.
+
+> **💡 Note :** Dont forget to press s to switch from *development build* to *Expo GO*.
 
 ```bash
 npx expo start
