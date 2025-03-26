@@ -66,7 +66,6 @@ To work with the application in development mode, use the following command
 
 > **💡 Note :** We use npx to avoid installing the Expo and EAS CLI.
 
-
 ```bash
 npx expo start
 ```
@@ -74,7 +73,11 @@ If you want to generate the APK, you need to log into your EAS account using the
 ```bash
 npx eas login
 ```
-Then, use this command to build the APK
+Then, create the project with this command
+```bash
+npx eas init
+```
+And use this command to build the APK
 ```bash
 npx eas build --profile development --platform android 
 ```
