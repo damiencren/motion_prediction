@@ -43,7 +43,7 @@ cd motion_prediction
 2. Install dependencies
 
 ```bash
-yarn i
+yarn install
 ```
 
 3. Start the application in development mode
