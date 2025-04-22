@@ -75,15 +75,15 @@ npx expo start
 ```
 If you want to generate the APK, you need to log into your EAS account using the command
 ```bash
-npx eas login
+npx eas-cli login
 ```
 Then, create the project with this command
 ```bash
-npx eas init
+npx eas-cli init
 ```
 And use this command to build the APK
 ```bash
-npx eas build --profile development --platform android 
+npx eas-cli build --profile development --platform android 
 ```
 The APK should be accessible on your EAS portal at https://expo.dev/. Use the APK to install the application on your phone and then open it.
 
